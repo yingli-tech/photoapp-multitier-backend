@@ -17,7 +17,7 @@ This project was implemented and extended based on coursework, with a focus on s
 ## Architecture
 
 ### Multi-tier Design
-
+```
 Client
    ↓ HTTP
 Node.js Web Service (Express, AWS EB)
@@ -26,7 +26,7 @@ AWS Backend:
   - S3 (Image Storage)
   - RDS (Metadata)
   - Rekognition (Image Analysis)
-
+```
 As described in the project specification, the system introduces a **web service layer** between the client and AWS services to improve scalability and separation of concerns.
 
 ## Tech Stack
