@@ -80,7 +80,7 @@ Each endpoint is implemented in a separate module:
 This modular design improves maintainability and separation of concerns.
 
 ### Example API
-
+```
 GET /ping
 
 Response:
@@ -88,7 +88,7 @@ Response:
   "M": 10,
   "N": 3
 }
-
+```
 M = number of images, N = number of users
 
 ## Design Highlights
