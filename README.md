@@ -148,17 +148,64 @@ Deployment is managed using the provided scripts:
 
 ### Usage
 
-Once deployed, the web service can be accessed via:
+#### Live Demo
 
-- **http://<your-eb-endpoint>**
+**Base URL**
+http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com
 
-Example endpoint:
+This is a backend-only REST API (no frontend UI). You can interact with it using a browser.
 
-- **http://<your-eb-endpoint>/ping**
+#### API Usage Examples
 
-The `/ping` endpoint returns system status, including:
-- Number of images stored in S3  
-- Number of users in the database  
+##### Get all images
+
+```
+GET /images
+```
+
+Example:
+
+```
+http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/images
+```
+
+##### Get a specific image
+
+```
+GET /image?id=<image_id>
+```
+
+##### Get image labels
+
+```
+GET /image-labels?id=<image_id>
+```
+
+##### Get images with a label
+
+```
+GET /images-with-label?label=<label>
+```
+
+##### Health check
+
+```
+GET /ping
+```
+
+Example:
+
+```
+http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/ping
+```
+
+##### Notes
+
+* This is a public demo service with no authentication.
+* Data may change or be reset at any time.
+* Write operations (POST/DELETE) are not documented to prevent accidental data loss.
+
+
 
 ## Configuration
 
