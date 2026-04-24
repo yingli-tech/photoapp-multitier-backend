@@ -53,24 +53,76 @@ The backend is implemented using:
 - mysql2 (database access)
 - AWS SDK (S3 + Rekognition)
 
-### API Endpoints
+### Live Demo
 
-Each endpoint is implemented in a separate module:
+**Base URL**: http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com
 
+This is a backend-only REST API (no frontend UI). You can test GET endpoints directly in a browser.
 
-#### GET Endpoints
-- **`api_get_images.js`** — `getImages()`  
-- **`api_get_image.js`** — `getImage()`  
-- **`api_get_image_labels.js`** — `getImageLabels()`  
-- **`api_get_images_with_label.js`** — `getImagesWithLabel()`  
-- **`api_get_ping.js`** — `getPing()`  
-- **`api_get_users.js`** — `getUsers()`  
+### REST API
 
-#### POST Endpoints
-- **`api_post_image.js`** — `postImage()`  
+The backend exposes the following REST API endpoints:
 
-#### DELETE Endpoints
-- **`api_delete_images.js`** — `deleteImages()`  
+#### GET all images
+`GET /images`  
+
+Example:
+```text
+http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/images
+```
+#### Get a specific image
+`GET /image/:assetid`
+
+Example:
+```text
+http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/image/1001
+```
+You can get a valid asset id from `GET /images` 
+
+#### Get labels of a specific image
+`GET /image_labels/:assetid`
+
+Example:
+```text
+http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/image_labels/1001
+```
+
+#### Get images with a label
+`GET /images_with_label/:label`
+
+Example:
+```text
+http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/images_with_label/mammal
+```
+- Only existing labels will return the corresponding data
+- Non‑existent labels return an empty result with status 200 OK
+- You can obtain valid labels from `GET /image_labels/:assetid`
+
+#### Get all users
+`GET /users`
+
+Example:
+```text
+http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/users
+```
+
+#### Health check
+`GET /ping`
+
+Example:
+```text
+http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/ping
+```
+
+#### POST
+- `/image/:userid` — Upload a new image  
+
+#### DELETE
+- `/images` — Delete images
+
+#### Notes
+The public examples above only include GET endpoints because they can be safely tested in a browser. 
+POST and DELETE endpoints are listed for completeness, but example requests are intentionally omitted to avoid accidental data changes.
 
 #### Other Project Files
 - **`app.js`** — Main Express application   
@@ -89,7 +141,16 @@ Response:
   "N": 3
 }
 ```
-M = number of images, N = number of users
+- M = number of images
+- N = number of users
+
+## System Design Summary
+
+This system implements a multi-tier architecture by introducing a Node.js web service between clients and AWS services.
+
+The web service acts as a centralized API layer that handles request processing, data coordination, and integration with S3, RDS, and Rekognition.
+
+This design improves scalability, modularity, and separation of concerns compared to direct client-to-AWS interaction.
 
 ## Design Highlights
 
@@ -125,7 +186,6 @@ This pattern is emphasized in the project design.
 - retry logic is implemented for database operations
 - network failures are handled via structured error handling
 
-
 ### 4. Separation of Concerns
 
 - API layer (Node.js)
@@ -134,78 +194,15 @@ This pattern is emphasized in the project design.
 - AI layer (Rekognition)
 
 
-## Deployment & Usage
+## Deployment (AWS Elastic Beanstalk)
 
 The backend service is deployed on AWS Elastic Beanstalk.
-
-### Deployment (AWS Elastic Beanstalk)
 
 Deployment is managed using the provided scripts:
 
 - `create.ps1` — Create the Elastic Beanstalk environment
 - `update.ps1` — Deploy updated application code
 - `delete.ps1` — Terminate and clean up the environment
-
-### Usage
-
-#### Live Demo
-
-**Base URL**
-http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com
-
-This is a backend-only REST API (no frontend UI). You can interact with it using a browser.
-
-#### API Usage Examples
-
-##### Get all images
-
-```
-GET /images
-```
-
-Example:
-
-```
-http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/images
-```
-
-##### Get a specific image
-
-```
-GET /image?id=<image_id>
-```
-
-##### Get image labels
-
-```
-GET /image-labels?id=<image_id>
-```
-
-##### Get images with a label
-
-```
-GET /images-with-label?label=<label>
-```
-
-##### Health check
-
-```
-GET /ping
-```
-
-Example:
-
-```
-http://photoapp-web-service-env.eba-i39uydzy.us-east-2.elasticbeanstalk.com/ping
-```
-
-##### Notes
-
-* This is a public demo service with no authentication.
-* Data may change or be reset at any time.
-* Write operations (POST/DELETE) are not documented to prevent accidental data loss.
-
-
 
 ## Configuration
 
